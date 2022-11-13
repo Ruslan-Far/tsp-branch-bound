@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Main {
+
 	public static final Integer INF_MAX = 99999999;
 
-//	private static final Integer[][] INITIAL_MATRIX = {
+//	public static final Integer[][] INITIAL_MATRIX = {
 //		{ INF_MAX, 13, 11, 11, 11, 14, 19, 13, 8 },
 //		{ 13, INF_MAX, 8, 8, 8, 11, 16, 16, 10 },
 //		{ 11, 8, INF_MAX, 10, 10, 3, 8, 13, 8 },
@@ -29,6 +29,8 @@ public class Main {
 		ArrayList<ArrayList<Integer>> matrix;
 		ArrayList<Integer> di;
 		ArrayList<Integer> dj;
+		ArrayList<Node> nodes;
+		int[][] scoresMatrix;
 
 		matrix = Functions.duplicateInitialMatrix();
 		di = Functions.searchMinRows(matrix);
@@ -36,5 +38,71 @@ public class Main {
 		dj = Functions.searchMinColumns(matrix);
 		Functions.runReductionColumns(matrix, dj);
 		Functions.printMatrix(matrix);
+		nodes = searchRootLowerBound(di, dj);
+		scoresMatrix = getScoresMatrix(matrix);
+		Functions.printMatrix(scoresMatrix);
+	}
+
+	private static ArrayList<Node> searchRootLowerBound(ArrayList<Integer> di, ArrayList<Integer> dj) {
+		ArrayList<Node> nodes;
+		int sum;
+
+		nodes = new ArrayList<>();
+		sum = Functions.sum(di) + Functions.sum(dj);
+		Node node = new Node(sum, true, -1, -1, null);
+		nodes.add(node);
+		return nodes;
+	}
+
+	private static int[][] initScoresMatrix(ArrayList<ArrayList<Integer>> matrix) {
+		int[][] scoresMatrix;
+
+		scoresMatrix = new int[matrix.size()][matrix.get(0).size()];
+		for (int i = 0; i < scoresMatrix.length; i++) {
+			for (int j = 0; j < scoresMatrix[0].length; j++) {
+				if (matrix.get(i).get(j) != 0)
+					scoresMatrix[i][j] = -1;
+			}
+		}
+		return scoresMatrix;
+	}
+
+	private static int minRow(int row, int col, ArrayList<ArrayList<Integer>> matrix) {
+		int min;
+
+		min = INF_MAX;
+		for (int i = 0; i < matrix.get(row).size(); i++) {
+			if (i != col) {
+				if (matrix.get(row).get(i) < min)
+					min = matrix.get(row).get(i);
+			}
+		}
+		return min;
+	}
+
+	private static int minCol(int row, int col, ArrayList<ArrayList<Integer>> matrix) {
+		int min;
+
+		min = INF_MAX;
+		for (int i = 0; i < matrix.size(); i++) {
+			if (i != row) {
+				if (matrix.get(i).get(col) < min)
+					min = matrix.get(i).get(col);
+			}
+		}
+		return min;
+	}
+
+	private static int[][] getScoresMatrix(ArrayList<ArrayList<Integer>> matrix) {
+		int[][] scoresMatrix;
+
+		scoresMatrix = initScoresMatrix(matrix);
+		for (int i = 0; i < scoresMatrix.length; i++) {
+			for (int j = 0; j < scoresMatrix[0].length; j++) {
+				if (scoresMatrix[i][j] == 0)
+					scoresMatrix[i][j] = minRow(i, j, matrix) + minCol(i, j, matrix);
+			}
+		}
+		return scoresMatrix;
 	}
 }

@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Functions {
+
 	public static ArrayList<ArrayList<Integer>> duplicateInitialMatrix() {
 		ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
 
@@ -62,10 +63,28 @@ public class Functions {
 		}
 	}
 
+	public static Integer sum(ArrayList<Integer> arrayList) {
+		Integer sum = 0;
+
+		for (int i = 0; i < arrayList.size(); i++) {
+			sum += arrayList.get(i);
+		}
+		return sum;
+	}
+
 	public static void printMatrix(ArrayList<ArrayList<Integer>> matrix) {
 		for (int i = 0; i < matrix.size(); i++) {
 			for (int j = 0; j < matrix.get(i).size(); j++) {
 				System.out.printf("%8d\t", matrix.get(i).get(j));
+			}
+			System.out.println();
+		}
+	}
+
+	public static void printMatrix(int [][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				System.out.printf("%4d\t", matrix[i][j]);
 			}
 			System.out.println();
 		}
