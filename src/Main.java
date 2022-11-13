@@ -31,6 +31,7 @@ public class Main {
 		ArrayList<Integer> dj;
 		ArrayList<Node> nodes;
 		int[][] scoresMatrix;
+		int[] coordsMaxScore;
 
 		matrix = Functions.duplicateInitialMatrix();
 		di = Functions.searchMinRows(matrix);
@@ -38,18 +39,22 @@ public class Main {
 		dj = Functions.searchMinColumns(matrix);
 		Functions.runReductionColumns(matrix, dj);
 		Functions.printMatrix(matrix);
-		nodes = searchRootLowerBound(di, dj);
+		nodes = searchRootLowerBound(di, dj, matrix);
 		scoresMatrix = getScoresMatrix(matrix);
 		Functions.printMatrix(scoresMatrix);
+		coordsMaxScore = getCoordsMaxScore(scoresMatrix);
+//		System.out.println(coordsMaxScore[0] + " " + coordsMaxScore[1]);
+		
 	}
 
-	private static ArrayList<Node> searchRootLowerBound(ArrayList<Integer> di, ArrayList<Integer> dj) {
+	private static ArrayList<Node> searchRootLowerBound(ArrayList<Integer> di, ArrayList<Integer> dj,
+														ArrayList<ArrayList<Integer>> matrix) {
 		ArrayList<Node> nodes;
 		int sum;
 
 		nodes = new ArrayList<>();
 		sum = Functions.sum(di) + Functions.sum(dj);
-		Node node = new Node(sum, true, -1, -1, null);
+		Node node = new Node(sum, true, -1, -1, null, new ArrayList<>(matrix));
 		nodes.add(node);
 		return nodes;
 	}
@@ -104,5 +109,23 @@ public class Main {
 			}
 		}
 		return scoresMatrix;
+	}
+
+	private static int[] getCoordsMaxScore(int[][] scoresMatrix) {
+		int[] coordsMaxScore;
+		int max;
+
+		coordsMaxScore = new int[2];
+		max = -1;
+		for (int i = 0; i < scoresMatrix.length; i++) {
+			for (int j = 0; j < scoresMatrix[i].length; j++) {
+				if (scoresMatrix[i][j] > max) {
+					max = scoresMatrix[i][j];
+					coordsMaxScore[0] = i;
+					coordsMaxScore[1] = j;
+				}
+			}
+		}
+		return coordsMaxScore;
 	}
 }

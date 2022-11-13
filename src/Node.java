@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Node {
 
 	private Integer lowerBound;
@@ -5,13 +7,16 @@ public class Node {
 	private Integer row;
 	private Integer column;
 	private Boolean isIncluded;
+	private ArrayList<ArrayList<Integer>> matrix;
 
-	public Node(Integer lowerBound, Boolean isLeaf, Integer row, Integer column, Boolean isIncluded) {
+	public Node(Integer lowerBound, Boolean isLeaf, Integer row,
+				Integer column, Boolean isIncluded, ArrayList<ArrayList<Integer>> matrix) {
 		this.lowerBound = lowerBound;
 		this.isLeaf = isLeaf;
 		this.row = row;
 		this.column = column;
 		this.isIncluded = isIncluded;
+		this.matrix = matrix;
 	}
 
 	public Integer getLowerBound() {
@@ -52,5 +57,13 @@ public class Node {
 
 	public void setIncluded(Boolean included) {
 		isIncluded = included;
+	}
+
+	public ArrayList<ArrayList<Integer>> getMatrix() {
+		return matrix;
+	}
+
+	public void setMatrix(ArrayList<ArrayList<Integer>> matrix) {
+		this.matrix = matrix;
 	}
 }
