@@ -72,6 +72,16 @@ public class Functions {
 		return sum;
 	}
 
+	public static ArrayList<ArrayList<Integer>> duplicateMatrix(ArrayList<ArrayList<Integer>> matrix) {
+		ArrayList<ArrayList<Integer>> duplicateMatrix;
+
+		duplicateMatrix = new ArrayList<>(matrix);
+		for (int i = 0; i < matrix.size(); i++) {
+			duplicateMatrix.set(i, new ArrayList<>(matrix.get(i)));
+		}
+		return duplicateMatrix;
+	}
+
 	public static void printMatrix(ArrayList<ArrayList<Integer>> matrix) {
 		for (int i = 0; i < matrix.size(); i++) {
 			for (int j = 0; j < matrix.get(i).size(); j++) {

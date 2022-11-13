@@ -32,6 +32,7 @@ public class Main {
 		ArrayList<Node> nodes;
 		int[][] scoresMatrix;
 		int[] coordsMaxScore;
+		ArrayList<Node> truePath;
 
 		matrix = Functions.duplicateInitialMatrix();
 		di = Functions.searchMinRows(matrix);
@@ -43,8 +44,20 @@ public class Main {
 		scoresMatrix = getScoresMatrix(matrix);
 		Functions.printMatrix(scoresMatrix);
 		coordsMaxScore = getCoordsMaxScore(scoresMatrix);
-//		System.out.println(coordsMaxScore[0] + " " + coordsMaxScore[1]);
-		
+		System.out.println(coordsMaxScore[0] + " " + coordsMaxScore[1]);
+		truePath = new ArrayList<>();
+		truePath.add(nodes.get(0));
+		includeBranch(nodes, coordsMaxScore, Functions.duplicateMatrix(matrix), truePath);
+		Functions.printMatrix(nodes.get(1).getMatrix());
+//		System.out.println("-------------------------");
+//		System.out.println("-------------------------");
+//		Functions.printMatrix(matrix);
+//		System.out.println(nodes.get(1).getLowerBound());
+		notIncludeBranch(nodes, coordsMaxScore, scoresMatrix, Functions.duplicateMatrix(matrix), truePath);
+		System.out.println("++++++++++++++++++++++");
+		System.out.println("++++++++++++++++++++++");
+		Functions.printMatrix(nodes.get(2).getMatrix());
+		System.out.println(nodes.get(2).getLowerBound());
 	}
 
 	private static ArrayList<Node> searchRootLowerBound(ArrayList<Integer> di, ArrayList<Integer> dj,
@@ -54,7 +67,7 @@ public class Main {
 
 		nodes = new ArrayList<>();
 		sum = Functions.sum(di) + Functions.sum(dj);
-		Node node = new Node(sum, true, -1, -1, null, new ArrayList<>(matrix));
+		Node node = new Node(sum, true, -1, -1, null, Functions.duplicateMatrix(matrix));
 		nodes.add(node);
 		return nodes;
 	}
@@ -127,5 +140,42 @@ public class Main {
 			}
 		}
 		return coordsMaxScore;
+	}
+
+	private static void runReductionMatrix(int[] coordsMaxScore, ArrayList<ArrayList<Integer>> matrix) {
+		matrix.remove(coordsMaxScore[0]);
+		for (int i = 0; i < matrix.size(); i++) {
+			matrix.get(i).remove(coordsMaxScore[1]);
+		}
+	}
+
+	private static void includeBranch(ArrayList<Node> nodes, int[] coordsMaxScore,
+									  ArrayList<ArrayList<Integer>> matrix, ArrayList<Node> truePath) {
+		ArrayList<Integer> di;
+		ArrayList<Integer> dj;
+		Integer lowerBound;
+
+		matrix.get(coordsMaxScore[1]).set(coordsMaxScore[0], INF_MAX);
+		runReductionMatrix(coordsMaxScore, matrix);
+		di = Functions.searchMinRows(matrix);
+		Functions.runReductionRows(matrix, di);
+		dj = Functions.searchMinColumns(matrix);
+		Functions.runReductionColumns(matrix, dj);
+		lowerBound = truePath.get(truePath.size() - 1).getLowerBound() + Functions.sum(di) + Functions.sum(dj);
+		nodes.add(new Node(lowerBound, true, coordsMaxScore[0], coordsMaxScore[1],
+				true, matrix));
+		truePath.get(truePath.size() - 1).setLeaf(false);
+	}
+
+	private static void notIncludeBranch(ArrayList<Node> nodes, int[] coordsMaxScore, int[][] scoresMatrix,
+										 ArrayList<ArrayList<Integer>> matrix, ArrayList<Node> truePath) {
+		Integer lowerBound;
+
+		lowerBound = truePath.get(truePath.size() - 1).getLowerBound()
+				+ scoresMatrix[coordsMaxScore[0]][coordsMaxScore[1]];
+		nodes.add(new Node(lowerBound, true, coordsMaxScore[0], coordsMaxScore[1], false, matrix));
+		/////////////
+		truePath.get(truePath.size() - 1).setLeaf(false);
+		/////////////
 	}
 }
