@@ -22,10 +22,13 @@ public class Functions {
 		for (int i = 0; i < matrix.size(); i++) {
 			min = Main.INF_MAX;
 			for (int j = 0; j < matrix.get(i).size(); j++) {
-				if (matrix.get(i).get(j) < min)
+				if (matrix.get(i).get(j) != -1 && matrix.get(i).get(j) < min)
 					min = matrix.get(i).get(j);
 			}
-			di.add(min);
+			if (!Objects.equals(min, Main.INF_MAX))
+				di.add(min);
+			else
+				di.add(0);
 		}
 		return di;
 	}
@@ -33,7 +36,7 @@ public class Functions {
 	public static void runReductionRows(ArrayList<ArrayList<Integer>> matrix, ArrayList<Integer> di) {
 		for (int i = 0; i < matrix.size(); i++) {
 			for (int j = 0; j < matrix.get(i).size(); j++) {
-				if (!Objects.equals(matrix.get(i).get(j), Main.INF_MAX))
+				if (matrix.get(i).get(j) != -1 && !Objects.equals(matrix.get(i).get(j), Main.INF_MAX))
 					matrix.get(i).set(j, matrix.get(i).get(j) - di.get(i));
 			}
 		}
@@ -46,10 +49,13 @@ public class Functions {
 		for (int i = 0; i < matrix.get(0).size(); i++) {
 			min = Main.INF_MAX;
 			for (int j = 0; j < matrix.size(); j++) {
-				if (matrix.get(j).get(i) < min)
+				if (matrix.get(j).get(i) != -1 && matrix.get(j).get(i) < min)
 					min = matrix.get(j).get(i);
 			}
-			dj.add(min);
+			if (!Objects.equals(min, Main.INF_MAX))
+				dj.add(min);
+			else
+				dj.add(0);
 		}
 		return dj;
 	}
@@ -57,7 +63,7 @@ public class Functions {
 	public static void runReductionColumns(ArrayList<ArrayList<Integer>> matrix, ArrayList<Integer> dj) {
 		for (int i = 0; i < matrix.get(0).size(); i++) {
 			for (int j = 0; j < matrix.size(); j++) {
-				if (!Objects.equals(matrix.get(j).get(i), Main.INF_MAX))
+				if (matrix.get(j).get(i) != -1 && !Objects.equals(matrix.get(j).get(i), Main.INF_MAX))
 					matrix.get(j).set(i, matrix.get(j).get(i) - dj.get(i));
 			}
 		}
@@ -86,6 +92,16 @@ public class Functions {
 		for (int i = 0; i < matrix.size(); i++) {
 			for (int j = 0; j < matrix.get(i).size(); j++) {
 				System.out.printf("%8d\t", matrix.get(i).get(j));
+			}
+			System.out.println();
+		}
+	}
+
+	public static void printMatrixWithoutNegOne(ArrayList<ArrayList<Integer>> matrix) {
+		for (int i = 0; i < matrix.size(); i++) {
+			for (int j = 0; j < matrix.get(i).size(); j++) {
+				if (matrix.get(i).get(j) != -1)
+					System.out.printf("%8d\t", matrix.get(i).get(j));
 			}
 			System.out.println();
 		}
