@@ -8,6 +8,9 @@ public class Node {
 	private Integer column;
 	private Boolean isIncluded;
 	private ArrayList<ArrayList<Integer>> matrix;
+	private ArrayList<Node> truePath;
+
+	public Node() {}
 
 	public Node(Integer lowerBound, Boolean isLeaf, Integer row,
 				Integer column, Boolean isIncluded, ArrayList<ArrayList<Integer>> matrix) {
@@ -65,5 +68,13 @@ public class Node {
 
 	public void setMatrix(ArrayList<ArrayList<Integer>> matrix) {
 		this.matrix = matrix;
+	}
+
+	public ArrayList<Node> getTruePath() {
+		return truePath;
+	}
+
+	public void setTruePath(ArrayList<Node> truePath) {
+		this.truePath = truePath;
 	}
 }
