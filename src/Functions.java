@@ -98,12 +98,20 @@ public class Functions {
 	}
 
 	public static void printMatrixWithoutNegOne(ArrayList<ArrayList<Integer>> matrix) {
+//		int countNegOne;
+
 		for (int i = 0; i < matrix.size(); i++) {
+//			countNegOne = 0;
 			for (int j = 0; j < matrix.get(i).size(); j++) {
 				if (matrix.get(i).get(j) != -1)
 					System.out.printf("%8d\t", matrix.get(i).get(j));
+//				else
+//					countNegOne++;
+//				if (countNegOne > 1)
+//					break;
 			}
-			System.out.println();
+//			if (countNegOne == 0 || countNegOne == 1)
+				System.out.println();
 		}
 	}
 
@@ -118,5 +126,17 @@ public class Functions {
 
 	public static void printArray(ArrayList<Integer> arrayList) {
 		System.out.println(arrayList.toString());
+	}
+
+	public static void printTruePath(ArrayList<Node> truePath) {
+		for (int i = 0; i < truePath.size(); i++) {
+			if (truePath.get(i).getIncluded() == null)
+				System.out.print("Корень ");
+			else if (truePath.get(i).getIncluded())
+				System.out.print("Включено ");
+			else
+				System.out.print("НЕ включено ");
+			System.out.println(truePath.get(i).getRow() + " " + truePath.get(i).getColumn());
+		}
 	}
 }

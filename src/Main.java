@@ -49,6 +49,8 @@ public static void main(String[] args) {
 	Functions.printMatrix(newNode.getMatrix());
 	searchRootLowerBound(nodes, newNode, di, dj);
 	System.out.println("Корневая нижняя граница: " + nodes.get(0).getLowerBound());
+	System.out.println("Найденный путь:");
+	Functions.printTruePath(nodes.get(0).getTruePath());
 	System.out.println("\n\n");
 
 	System.out.println("Ветка со включенным маршрутом");
@@ -60,15 +62,21 @@ public static void main(String[] args) {
 	matrix = Functions.duplicateMatrix(nodes.get(0).getMatrix());
 	includeBranch(nodes, 0, coordsMaxScore, Functions.duplicateMatrix(matrix));
 	System.out.println("Матрица после редукции строк и столбцов:");
-	Functions.printMatrix(nodes.get(1).getMatrix());
+//	Functions.printMatrix(nodes.get(1).getMatrix());
+	Functions.printMatrixWithoutNegOne(nodes.get(1).getMatrix());
 	System.out.println("Корневая нижняя граница: " + nodes.get(1).getLowerBound());
+	System.out.println("Найденный путь:");
+	Functions.printTruePath(nodes.get(1).getTruePath());
 	System.out.println("\n\n");
 
 	System.out.println("Ветка с НЕ включенным маршрутом");
 	notIncludeBranch(nodes, 0, coordsMaxScore, scoresMatrix, matrix);
 	System.out.println("Матрица:");
-	Functions.printMatrix(nodes.get(2).getMatrix());
+//	Functions.printMatrix(nodes.get(2).getMatrix());
+	Functions.printMatrixWithoutNegOne(nodes.get(2).getMatrix());
 	System.out.println("Корневая нижняя граница: " + nodes.get(2).getLowerBound());
+	System.out.println("Найденный путь:");
+	Functions.printTruePath(nodes.get(2).getTruePath());
 	System.out.println("\n\n");
 	selectBranch(nodes);
 }
@@ -175,7 +183,8 @@ public static void main(String[] args) {
 		matrix.get(coordsMaxScore[1]).set(coordsMaxScore[0], INF_MAX);
 		runReductionMatrix(coordsMaxScore, matrix);
 		System.out.println("Матрица после редукции матрицы:");
-		Functions.printMatrix(matrix);
+//		Functions.printMatrix(matrix);
+		Functions.printMatrixWithoutNegOne(matrix);
 		di = Functions.searchMinRows(matrix);
 		Functions.runReductionRows(matrix, di);
 		dj = Functions.searchMinColumns(matrix);
@@ -229,7 +238,9 @@ public static void main(String[] args) {
 				}
 			}
 			localRoot = nodes.get(indexNode);
-			System.out.println("------------------------------------------------------------------------------\n");
+			if (localRoot.getTruePath().size() - 2 == INITIAL_MATRIX.length)
+				break;
+			System.out.println("------------------------------------------------------------------------------\n\n\n");
 			if (localRoot.getIncluded()) {
 				System.out.println("Ветвление начнется с ветки со включенным маршрутом под индексом: " + indexNode);
 				matrix = Functions.duplicateMatrix(localRoot.getMatrix());
@@ -241,14 +252,20 @@ public static void main(String[] args) {
 				System.out.println("Координаты максимальной оценки: " + coordsMaxScore[0] + " " + coordsMaxScore[1]);
 				includeBranch(nodes, indexNode, coordsMaxScore, Functions.duplicateMatrix(matrix));
 				System.out.println("Матрица после редукции строк и столбцов:");
-				Functions.printMatrix(nodes.get(3).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(3).getLowerBound());
+//				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
+				Functions.printMatrixWithoutNegOne(nodes.get(nodes.size() - 1).getMatrix());
+				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Найденный путь:");
+				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
 				System.out.println("Ветка с НЕ включенным маршрутом");
 				notIncludeBranch(nodes, indexNode, coordsMaxScore, scoresMatrix, matrix);
 				System.out.println("Матрица:");
-				Functions.printMatrix(nodes.get(4).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(4).getLowerBound());
+//				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
+				Functions.printMatrixWithoutNegOne(nodes.get(nodes.size() - 1).getMatrix());
+				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Найденный путь:");
+				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
 			} else {
 				System.out.println("Ветвление начнется с ветки с НЕ включенным маршрутом под индексом: " + indexNode);
@@ -257,16 +274,45 @@ public static void main(String[] args) {
 
 				matrix = Functions.duplicateMatrix(localRoot.getMatrix());
 				matrix.get(localRoot.getRow()).set(localRoot.getColumn(), INF_MAX);
+				System.out.println("Матрица после установки бесконечности в рассматриваемый маршрут:");
+//				Functions.printMatrix(matrix);
+				Functions.printMatrixWithoutNegOne(matrix);
 				di = Functions.searchMinRows(matrix);
 				Functions.runReductionRows(matrix, di);
 				dj = Functions.searchMinColumns(matrix);
 				Functions.runReductionColumns(matrix, dj);
+				System.out.print("di: ");
+				Functions.printArray(di);
+				System.out.print("dj: ");
+				Functions.printArray(dj);
+				System.out.println("Матрица после редукции строк и столбцов:");
+//				Functions.printMatrix(matrix);
+				Functions.printMatrixWithoutNegOne(matrix);
+				System.out.println("Ветка со включенным маршрутом");
 				scoresMatrix = getScoresMatrix(matrix);
+				System.out.println("Матрица оценок:");
+				Functions.printMatrix(scoresMatrix);
 				coordsMaxScore = getCoordsMaxScore(scoresMatrix);
+				System.out.println("Координаты максимальной оценки: " + coordsMaxScore[0] + " " + coordsMaxScore[1]);
 				includeBranch(nodes, indexNode, coordsMaxScore, Functions.duplicateMatrix(matrix));
+				System.out.println("Матрица после редукции строк и столбцов:");
+//				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
+				Functions.printMatrixWithoutNegOne(nodes.get(nodes.size() - 1).getMatrix());
+				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Найденный путь:");
+				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
+				System.out.println("\n\n");
+				System.out.println("Ветка с НЕ включенным маршрутом");
 				notIncludeBranch(nodes, indexNode, coordsMaxScore, scoresMatrix, matrix);
+				System.out.println("Матрица:");
+//				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
+				Functions.printMatrixWithoutNegOne(nodes.get(nodes.size() - 1).getMatrix());
+				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Найденный путь:");
+				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
+				System.out.println("\n\n");
 			}
-			break;
+//			break;
 		}
 	}
 }
