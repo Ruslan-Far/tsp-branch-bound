@@ -1,29 +1,29 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class Main {
 
 	public static final Integer INF_MAX = 99999999;
 
-//	public static final Integer[][] INITIAL_MATRIX = {
-//		{ INF_MAX, 13, 11, 11, 11, 14, 19, 13, 8 },
-//		{ 13, INF_MAX, 8, 8, 8, 11, 16, 16, 10 },
-//		{ 11, 8, INF_MAX, 10, 10, 3, 8, 13, 8 },
-//		{ 11, 8, 10, INF_MAX, 10, 3, 8, 13, 8 },
-//		{ 11, 8, 10, 10, INF_MAX, 3, 8, 13, 8 },
-//		{ 14, 11, 3, 3, 3, INF_MAX, 5, 14, 11 },
-//		{ 19, 16, 8, 8, 8, 5, INF_MAX, 9, 14 },
-//		{ 13, 16, 13, 13, 13, 14, 9, INF_MAX, 6 },
-//		{ 8, 10, 8, 8, 8, 11, 14, 6, INF_MAX },
-//	};
-
 	public static final Integer[][] INITIAL_MATRIX = {
-		{ INF_MAX, 20, 18, 12, 8 },
-		{ 5, INF_MAX, 14, 7, 11 },
-		{ 12, 18, INF_MAX, 6, 11 },
-		{ 11, 17, 11, INF_MAX, 12 },
-		{ 5, 5, 5, 5, INF_MAX }
+		{ INF_MAX, 13, 11, 11, 11, 14, 19, 13, 8 },
+		{ 13, INF_MAX, 8, 8, 8, 11, 16, 16, 10 },
+		{ 11, 8, INF_MAX, 10, 10, 3, 8, 13, 8 },
+		{ 11, 8, 10, INF_MAX, 10, 3, 8, 13, 8 },
+		{ 11, 8, 10, 10, INF_MAX, 3, 8, 13, 8 },
+		{ 14, 11, 3, 3, 3, INF_MAX, 5, 14, 11 },
+		{ 19, 16, 8, 8, 8, 5, INF_MAX, 9, 14 },
+		{ 13, 16, 13, 13, 13, 14, 9, INF_MAX, 6 },
+		{ 8, 10, 8, 8, 8, 11, 14, 6, INF_MAX },
 	};
+
+//	public static final Integer[][] INITIAL_MATRIX = {
+//		{ INF_MAX, 20, 18, 12, 8 },
+//		{ 5, INF_MAX, 14, 7, 11 },
+//		{ 12, 18, INF_MAX, 6, 11 },
+//		{ 11, 17, 11, INF_MAX, 12 },
+//		{ 5, 5, 5, 5, INF_MAX }
+//	};
 
 public static void main(String[] args) {
 	ArrayList<ArrayList<Integer>> matrix;
@@ -67,7 +67,7 @@ public static void main(String[] args) {
 	System.out.println("Матрица после редукции строк и столбцов:");
 //	Functions.printMatrix(nodes.get(1).getMatrix());
 	Functions.printMatrixWithoutNegTwo(nodes.get(1).getMatrix());
-	System.out.println("Корневая нижняя граница: " + nodes.get(1).getLowerBound());
+	System.out.println("Локальная нижняя граница: " + nodes.get(1).getLowerBound());
 	System.out.println("Найденный путь:");
 	Functions.printTruePath(nodes.get(1).getTruePath());
 	System.out.println("\n\n");
@@ -77,7 +77,7 @@ public static void main(String[] args) {
 	System.out.println("Матрица:");
 //	Functions.printMatrix(nodes.get(2).getMatrix());
 	Functions.printMatrixWithoutNegTwo(nodes.get(2).getMatrix());
-	System.out.println("Корневая нижняя граница: " + nodes.get(2).getLowerBound());
+	System.out.println("Локальная нижняя граница: " + nodes.get(2).getLowerBound());
 	System.out.println("Найденный путь:");
 	Functions.printTruePath(nodes.get(2).getTruePath());
 	System.out.println("\n\n");
@@ -226,6 +226,17 @@ public static void main(String[] args) {
 		nodes.add(newNode);
 	}
 
+	private static boolean isEnd(ArrayList<Node> truePath) {
+		int count;
+
+		count = 0;
+		for (int i = 1; i < truePath.size(); i++) {
+			if (truePath.get(i).getIncluded())
+				count++;
+		}
+		return count == INITIAL_MATRIX.length - 1;
+	}
+
 	private static void selectBranch(ArrayList<Node> nodes) {
 		ArrayList<ArrayList<Integer>> matrix;
 		int min;
@@ -234,7 +245,7 @@ public static void main(String[] args) {
 		int[] coordsMaxScore;
 		Node localRoot;
 
-		while (true) {
+		while (!isEnd(nodes.get(nodes.size() - 2).getTruePath())) {
 			min = INF_MAX;
 			indexNode = -1;
 			for (int i = 0; i < nodes.size(); i++) {
@@ -244,8 +255,6 @@ public static void main(String[] args) {
 				}
 			}
 			localRoot = nodes.get(indexNode);
-			if (localRoot.getTruePath().size() - 2 == INITIAL_MATRIX.length)
-				break;
 			System.out.println("------------------------------------------------------------------------------\n\n\n");
 			if (localRoot.getIncluded()) {
 				System.out.println("Ветвление начнется с ветки с включенным маршрутом под индексом: " + indexNode);
@@ -264,7 +273,7 @@ public static void main(String[] args) {
 				System.out.println("Матрица после редукции строк и столбцов:");
 //				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
 				Functions.printMatrixWithoutNegTwo(nodes.get(nodes.size() - 1).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Локальная нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
 				System.out.println("Найденный путь:");
 				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
@@ -274,7 +283,7 @@ public static void main(String[] args) {
 				System.out.println("Матрица:");
 //				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
 				Functions.printMatrixWithoutNegTwo(nodes.get(nodes.size() - 1).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Локальная нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
 				System.out.println("Найденный путь:");
 				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
@@ -313,7 +322,7 @@ public static void main(String[] args) {
 				System.out.println("Матрица после редукции строк и столбцов:");
 //				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
 				Functions.printMatrixWithoutNegTwo(nodes.get(nodes.size() - 1).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Локальная нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
 				System.out.println("Найденный путь:");
 				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
@@ -323,11 +332,61 @@ public static void main(String[] args) {
 				System.out.println("Матрица:");
 //				Functions.printMatrix(nodes.get(nodes.size() - 1).getMatrix());
 				Functions.printMatrixWithoutNegTwo(nodes.get(nodes.size() - 1).getMatrix());
-				System.out.println("Корневая нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
+				System.out.println("Локальная нижняя граница: " + nodes.get(nodes.size() - 1).getLowerBound());
 				System.out.println("Найденный путь:");
 				Functions.printTruePath(nodes.get(nodes.size() - 1).getTruePath());
 				System.out.println("\n\n");
 			}
 		}
+		printAnswer(nodes.get(nodes.size() - 2));
+	}
+
+	private static void printAnswer(Node node) {
+		ArrayList<ArrayList<Integer>> matrix;
+		ArrayList<Node> truePath;
+		int time;
+
+		matrix = node.getMatrix();
+		truePath = new ArrayList<>(node.getTruePath());
+		time = 0;
+		for (int i = 0; i < matrix.size(); i++) {
+			for (int j = 0; j < matrix.get(i).size(); j++) {
+				if (matrix.get(i).get(j) != Functions.REPLACE_DELETE_NUMBER) {
+					Node newNode = new Node();
+					newNode.setRow(i);
+					newNode.setColumn(j);
+					newNode.setIncluded(true);
+					truePath.add(newNode);
+					i = matrix.size();
+					break;
+				}
+			}
+		}
+		System.out.println("Конечный найденный путь:");
+		Functions.printTruePath(truePath);
+		System.out.println("\nОтвет");
+		System.out.println("Упорядоченный путь:");
+		for (int i = 0; i < truePath.size(); i++) {
+			if (truePath.get(i).getIncluded() == null || !truePath.get(i).getIncluded()) {
+				truePath.remove(i);
+				i = -1;
+			}
+		}
+		for (int i = 0, j = 1; j < truePath.size(); j++) {
+			if (truePath.get(j) != null && i != j) {
+				if (Objects.equals(truePath.get(i).getColumn(), truePath.get(j).getRow())) {
+					System.out.print("(" + truePath.get(i).getRow() + ", " + truePath.get(i).getColumn() + "), ");
+					time += INITIAL_MATRIX[truePath.get(i).getRow()][truePath.get(i).getColumn()];
+					truePath.set(i, null);
+					i = j;
+					j = 0;
+				}
+			}
+			if (j + 1 == truePath.size()) {
+				System.out.println("(" + truePath.get(i).getRow() + ", " + truePath.get(i).getColumn() + ")");
+				time += INITIAL_MATRIX[truePath.get(i).getRow()][truePath.get(i).getColumn()];
+			}
+		}
+		System.out.println("Время: " + time);
 	}
 }
